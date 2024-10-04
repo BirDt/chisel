@@ -1,6 +1,5 @@
 import 'package:chisel/Screens/Home/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'Services/Database Services/notes_service.dart';
 
