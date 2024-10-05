@@ -23,14 +23,14 @@ class _NotesViewState extends State<NotesView> {
 
     queryStream.listen((newResult) {
       setState(() {
-        notes = newResult;
+        notes = newResult.reversed.toList();
       });
     });
 
     // Initial notes state
     notesService.getAll().then((List<Note> val) {
       setState(() {
-        notes = val;
+        notes = val.reversed.toList();
       });
     });
   }
@@ -48,7 +48,7 @@ class _NotesViewState extends State<NotesView> {
             color: Color.fromARGB(150, Theme.of(context).colorScheme.secondary.red, Theme.of(context).colorScheme.secondary.green, Theme.of(context).colorScheme.secondary.blue),
             child: ListTile(
               title: Text(item.titleText),
-              subtitle: item.previewText != null ? Text(item.previewText!) : Container(),
+              subtitle: item.previewText != null ? Text(item.previewText!) : Text("${item.lastEditedAt}"),
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => EditorScreen(
                   note: item,

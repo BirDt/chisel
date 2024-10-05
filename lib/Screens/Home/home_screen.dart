@@ -1,6 +1,7 @@
 import 'package:chisel/Common/widgets/Notes%20List/notes_view.dart';
 import 'package:chisel/Common/widgets/chisel_app_bar.dart';
 import 'package:chisel/Screens/Home/widgets/home_action_button.dart';
+import 'package:chisel/Screens/Settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,7 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         )),
                 icon: const Icon(Icons.help_outline_outlined)),
             IconButton(
-                onPressed: () {}, icon: const Icon(Icons.settings_outlined)),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+                },
+                icon: const Icon(Icons.settings_outlined)),
             const Spacer(),
             Text(
               "Chisel",

@@ -1,6 +1,7 @@
 import 'package:chisel/Common/widgets/chisel_app_bar.dart';
 import 'package:chisel/Screens/Editor/widgets/chisel_editor.dart';
 import 'package:chisel/Screens/Editor/widgets/chisel_editor_toolbar.dart';
+import 'package:chisel/Screens/Editor/widgets/drawer/sidebar_tools.dart';
 import 'package:contained_tab_bar_view/contained_tab_bar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -40,6 +41,7 @@ class _EditorScreenState extends State<EditorScreen> {
 
       _controller.addListener(() {
         currentNote!.document = _controller.document;
+        currentNote!.lastEditedAt = DateTime.now();
         notesService.put(currentNote!);
       });
     });
@@ -81,7 +83,7 @@ class _EditorScreenState extends State<EditorScreen> {
                 views: [
                   Container(),
                   Container(),
-                  Container()
+                  SidebarTools(controller: _controller)
                 ])
         ),
       ),
@@ -90,7 +92,7 @@ class _EditorScreenState extends State<EditorScreen> {
           Expanded(
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: ChiselEditor(
                     controller: _controller
                 )

@@ -12,6 +12,8 @@ A notes app and mobile text editor for the creative writer. Very early developme
 - QuickView Editor
 - Notebook Goals
 - Text Analysis and Linting
+- Limited Spreadsheets
+- Forms
 
 ## Credits
 LocalMaterialNotes for an excellent editor starting point

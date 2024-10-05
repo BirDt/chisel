@@ -1,4 +1,5 @@
 import 'package:chisel/Screens/Home/home_screen.dart';
+import 'package:chisel/Services/settings_service.dart';
 import 'package:flutter/material.dart';
 
 import 'Services/Database Services/notes_service.dart';
@@ -7,6 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Chisel services
+  await SettingsService().ensureInitialized();
   await NotesService().ensureInitialized();
 
   // Run Chisel
