@@ -20,10 +20,16 @@ class Note {
 
   DateTime lastEditedAt;
 
+  @Index(composite: [CompositeIndex('parentType')])
+  int? parentId;
+  int? parentType; //0 for Notebook, 1 for Pocket
+
   Note({
     required this.createdAt,
     required this.lastEditedAt,
     required this.internalContent,
+    this.parentId,
+    this.parentType
   });
 
   factory Note.fromJson(Map<String, dynamic> json) => _$NoteFromJson(json);

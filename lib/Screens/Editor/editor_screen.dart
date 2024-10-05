@@ -1,4 +1,5 @@
 import 'package:chisel/Common/widgets/chisel_app_bar.dart';
+import 'package:chisel/Models/Notes/Notebooks/notebook_pocket.dart';
 import 'package:chisel/Screens/Editor/widgets/chisel_editor.dart';
 import 'package:chisel/Screens/Editor/widgets/chisel_editor_toolbar.dart';
 import 'package:chisel/Screens/Editor/widgets/drawer/sidebar_tools.dart';
@@ -7,12 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:keyboard_service/keyboard_service.dart';
 
+import '../../Models/Notes/Notebooks/notebook.dart';
 import '../../Models/Notes/note.dart';
 import '../../Services/Database Services/notes_service.dart';
 
 class EditorScreen extends StatefulWidget {
   final Note? note;
-  const EditorScreen({super.key, this.note});
+  final Notebook? notebook;
+  final NotebookPocket? pocket;
+  const EditorScreen({super.key, this.note, this.notebook, this.pocket});
 
   @override
   State<EditorScreen> createState() => _EditorScreenState();
@@ -42,7 +46,11 @@ class _EditorScreenState extends State<EditorScreen> {
       _controller.addListener(() {
         currentNote!.document = _controller.document;
         currentNote!.lastEditedAt = DateTime.now();
-        notesService.put(currentNote!);
+        if(widget.notebook != null){
+          currentNote!.parentId = widget.notebook!.id;
+          currentNote!.parentType = 0;
+        }
+        notesService.putNote(currentNote!);
       });
     });
   }

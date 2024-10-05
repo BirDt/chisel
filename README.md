@@ -4,7 +4,7 @@ A notes app and mobile text editor for the creative writer. Very early developme
 
 ## To-Do List
 - ~~Notes~~
-- Notebooks
+- ~~Notebooks~~
 - Notebook Pockets (subfolders)
 - Note Metadata (Relations)
 - Text Comments

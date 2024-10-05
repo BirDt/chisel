@@ -1,3 +1,5 @@
+import 'package:chisel/Models/Notes/Notebooks/notebook.dart';
+import 'package:chisel/Screens/Notebook/notebook_screen.dart';
 import 'package:chisel/Services/Database%20Services/notes_service.dart';
 import 'package:flutter/material.dart';
 
@@ -14,23 +16,38 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   final NotesService notesService = NotesService();
   List<Note> notes = [];
+  List<Notebook> notebooks = [];
 
   @override
   void initState() { 
     super.initState();
 
-    Stream<List<Note>> queryStream = notesService.watch();
+    Stream<List<Note>> noteQueryStream = notesService.watchNotes();
 
-    queryStream.listen((newResult) {
+    noteQueryStream.listen((newResult) {
       setState(() {
         notes = newResult.reversed.toList();
       });
     });
 
+    Stream<List<Notebook>> notebookQueryStream = notesService.watchNotebooks();
+
+    notebookQueryStream.listen((newResult) {
+      setState(() {
+        notebooks = newResult.reversed.toList();
+      });
+    });
+
     // Initial notes state
-    notesService.getAll().then((List<Note> val) {
+    notesService.getAllNotes().then((List<Note> val) {
       setState(() {
         notes = val.reversed.toList();
+      });
+    });
+    
+    notesService.getAllNotebooks().then((List<Notebook> val) {
+      setState(() {
+        notebooks = val;
       });
     });
   }
@@ -40,67 +57,122 @@ class _NotesViewState extends State<NotesView> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
-        itemCount: notes.length,
+        itemCount: notes.length + notebooks.length,
         itemBuilder: (context, index) {
-          final item = notes[index];
-
-          return Card(
-            color: Color.fromARGB(150, Theme.of(context).colorScheme.secondary.red, Theme.of(context).colorScheme.secondary.green, Theme.of(context).colorScheme.secondary.blue),
-            child: ListTile(
-              title: Text(item.titleText),
-              subtitle: item.previewText != null ? Text(item.previewText!) : Text("${item.lastEditedAt}"),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => EditorScreen(
-                  note: item,
-                )));
-              },
-              trailing: IconButton(
-                  onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => SimpleDialog(
-                      title: const Text("Delete Note?"),
-                      children: [
-                        const Padding(padding: EdgeInsets.only(
-                            left: 20, right: 20, bottom: 20),
-                            child: Text("Deleted notes cannot be recovered!")
+          if (index < notebooks.length){
+            final item = notebooks[index];
+            return Card(
+              color: Color.fromARGB(150, Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary
+                  .red, Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary
+                  .green, Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary
+                  .blue),
+              child: ListTile(
+                title: Text(item.title),
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) =>
+                      NotebookScreen(
+                        notebook: item,
+                      )));
+                },
+                leading: const Icon(Icons.menu_book_outlined),
+              ),
+            );
+          }
+          else {
+            final item = notes[index - notebooks.length];
+            return Card(
+              color: Color.fromARGB(150, Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary
+                  .red, Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary
+                  .green, Theme
+                  .of(context)
+                  .colorScheme
+                  .secondary
+                  .blue),
+              child: ListTile(
+                title: Text(item.titleText),
+                subtitle: item.previewText != null
+                    ? Text(item.previewText!)
+                    : Container(),
+                onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) =>
+                      EditorScreen(
+                        note: item,
+                      )));
+                },
+                trailing: IconButton(
+                    onPressed: () =>
+                        showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) =>
+                                SimpleDialog(
+                                  title: const Text("Delete Note?"),
+                                  children: [
+                                    const Padding(padding: EdgeInsets.only(
+                                        left: 20, right: 20, bottom: 20),
+                                        child: Text(
+                                            "Deleted notes cannot be recovered!")
+                                    ),
+                                    Row(
+                                      children: [
+                                        TextButton(
+                                            onPressed: () {
+                                              notesService.deleteNote(item);
+                                              Navigator.pop(context);
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20, right: 20),
+                                              child: Text("Delete it!",
+                                                  style: TextStyle(
+                                                      color: Theme
+                                                          .of(context)
+                                                          .colorScheme
+                                                          .onPrimary,
+                                                      fontWeight: FontWeight
+                                                          .bold)),
+                                            )),
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 20),
+                                              child: Text("Go back!",
+                                                  style: TextStyle(
+                                                      color: Theme
+                                                          .of(context)
+                                                          .colorScheme
+                                                          .onPrimary,
+                                                      fontWeight: FontWeight
+                                                          .bold)),
+                                            ))
+                                      ],
+                                    )
+                                  ],
+                                )
                         ),
-                        Row(
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  notesService.delete(item);
-                                  Navigator.pop(context);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 20, right: 20),
-                                  child: Text("Delete it!",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: Text("Go back!",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                          fontWeight: FontWeight.bold)),
-                                ))
-                          ],
-                        )
-                      ],
-                    )
-                  ),
-                  icon: const Icon(Icons.delete_outline)),
-            ),
-          );
+                    icon: const Icon(Icons.delete_outline)),
+              ),
+            );
+          }
         }
       )
     );

@@ -1,8 +1,8 @@
-import 'package:chisel/Models/Notes/note.dart';
 import 'package:chisel/Screens/Editor/editor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import '../../../Models/Notes/Notebooks/notebook.dart';
 import '../../../Services/Database Services/notes_service.dart';
 
 class HomeActionButton extends StatefulWidget {
@@ -43,7 +43,7 @@ class _HomeActionButtonState extends State<HomeActionButton> {
           labelStyle:Theme.of(context).textTheme.bodyMedium,
           shape: const CircleBorder(),
           onTap: () async {
-            notesService.put(Note.blank());
+            notesService.putNotebook(Notebook.empty());
           }
         )
       ],
