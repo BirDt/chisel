@@ -13,6 +13,8 @@ class Notebook {
 
   String title;
 
+  String? password;
+
   Notebook({
     required this.createdAt,
     required this.title

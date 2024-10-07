@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chisel/Common/widgets/Notes%20List/notebook_view.dart';
 import 'package:chisel/Common/widgets/chisel_app_bar.dart';
 import 'package:chisel/Models/Notes/Notebooks/notebook.dart';
@@ -32,10 +34,12 @@ class _NotebookScreenState extends State<NotebookScreen> {
 
     _controller.text = currentNotebook!.title;
 
-    _controller.addListener(() {
+    log("NOTEBOOK HAS PASSWORD? ${currentNotebook!.password}");
+
+    _controller.addListener(() async {
       currentNotebook!.title = _controller.text;
       titleText = currentNotebook!.title;
-      notesService.putNotebook(currentNotebook!);
+      await notesService.putNotebook(currentNotebook!);
     });
   }
 
@@ -46,10 +50,13 @@ class _NotebookScreenState extends State<NotebookScreen> {
         children: [
           IconButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingsScreen()));
+                if (currentNotebook!.password == null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SettingsScreen(notebook: currentNotebook!)));
+                }
               },
               icon: const Icon(Icons.settings_outlined)),
           const Spacer(),

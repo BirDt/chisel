@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:chisel/Models/Notes/Notebooks/notebook.dart';
 import 'package:chisel/Models/Notes/Notebooks/notebook_pocket.dart';
 import 'package:chisel/Services/Interface/database.dart';
@@ -41,7 +43,8 @@ class NotesService extends DatabaseService {
 
   Future<void> putNotebook(Notebook notebook) async {
     await database.writeTxn(() async {
-      await database.notebooks.put(notebook);
+      log("PUTTING NOTEBOOK, ${notebook.password}");
+     log("NOTEBOOK WITH ID PLACED: ${await database.notebooks.put(notebook)}");
     });
   }
 
